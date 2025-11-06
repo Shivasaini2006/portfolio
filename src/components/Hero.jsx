@@ -28,8 +28,8 @@ export default function Hero() {
               Contact me
             </a>
             <a 
-              href="/resume.pdf" 
-              download 
+              href="/ShivaResume.pdf" 
+              download="Shiva_Resume.pdf"
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg shadow-lg hover:shadow-xl hover-scale transition flex items-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
