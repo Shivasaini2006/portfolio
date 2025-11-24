@@ -1,62 +1,63 @@
 import React from 'react'
-import VantaBackground from './VantaBackground'
 
 export default function Hero() {
   return (
-    <section id="about" className="py-16 fade-in-up relative overflow-hidden min-h-screen flex items-center">
-      {/* Vanta.js NET Animation - Only in Hero Section */}
-      <VantaBackground />
-      
+    <section id="about" className="py-16 fade-in-up relative overflow-hidden h-screen flex items-center">
+      {/* Blurred Background Image */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/shiva.jpg)' }}
+        ></div>
+        <div className="absolute inset-0 backdrop-blur-sm bg-black/50"></div>
+      </div>
+
       {/* Hero Content */}
       <div className="container mx-auto px-6 grid gap-10 grid-cols-1 md:grid-cols-2 items-center relative z-10 w-full">
-        <div className="text-center md:text-left">
-          <div className="inline-block mb-4 px-4 py-2 bg-purple-900/30 border border-purple-700/30 rounded-full text-sm text-purple-200 font-medium">
-            👋 Welcome to my portfolio
+        <div className="text-center md:text-left space-y-6">
+          {/* Animated Title Section */}
+          <div className="hero-title-container max-w-3xl">
+            <span className="hero-title-text">Shiva Saini</span>
+            <span className="hero-subtitle-text">
+              <a href="https://github.com/Shivasaini2006" target="_blank" rel="noopener noreferrer">
+                Full Stack Developer
+              </a>
+            </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4 gold-gradient-text">
-            Hi — I'm Your Name
-          </h2>
-          <p className="text-lg text-cyan-100/80 mb-6 max-w-xl">
-            I build modern web experiences with React and Tailwind. I care about accessibility, performance, and delightful UI.
+
+          <p className="text-xl md:text-2xl text-cyan-100/90 font-light max-w-xl leading-relaxed">
+            Full-Stack Developer crafting beautiful, performant web experiences with modern technologies.
           </p>
 
-          <div className="flex flex-wrap justify-center md:justify-start gap-4">
-            <a href="#projects" className="px-6 py-3 accent-gradient text-white rounded-lg shadow-lg hover:shadow-xl hover-scale transition btn-gold-glow">
-              See projects
-            </a>
-            <a href="#contact" className="px-6 py-3 glass border-2 border-purple-900/30 rounded-lg text-purple-50 hover:border-purple-500 hover:bg-purple-900/20 transition">
-              Contact me
-            </a>
-            <a 
-              href="/ShivaResume.pdf" 
-              download="Shiva_Resume.pdf"
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg shadow-lg hover:shadow-xl hover-scale transition flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
+            <a href="#projects" className="group px-8 py-4 accent-gradient text-white rounded-xl shadow-2xl hover:shadow-purple-500/50 hover:-translate-y-1 transition-all duration-300 font-semibold text-lg flex items-center gap-2">
+              <span>View Projects</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
-              Download Resume
+            </a>
+            <a href="#contact" className="group px-8 py-4 glass border-2 border-purple-500/40 rounded-xl text-purple-50 hover:border-purple-400 hover:bg-purple-500/20 hover:-translate-y-1 transition-all duration-300 font-semibold text-lg backdrop-blur-md">
+              Let's Talk
+            </a>
+            <a
+              href="/ShivaResume.pdf"
+              download="Shiva_Resume.pdf"
+              className="group px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white rounded-xl shadow-2xl hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all duration-300 font-semibold text-lg flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:animate-bounce" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>Resume</span>
             </a>
           </div>
         </div>
 
-        <div className="mx-auto float-animate">
-          <div className="relative w-64 h-64 mx-auto md:mx-0">
-            <div className="absolute -left-6 -top-6 w-72 h-72 rounded-full bg-gradient-to-br from-purple-500/20 to-green-500/20 opacity-40 blur-3xl gradient-animate"></div>
-            <div className="absolute right-0 bottom-0 w-64 h-64 rounded-2xl overflow-hidden pulse-glow glass">
-              <div className="w-full h-full bg-gradient-to-br from-purple-500 via-purple-600 to-green-500 gradient-animate flex items-center justify-center text-white">
-                <div className="text-center p-6">
-                  <div className="w-20 h-20 rounded-full bg-black/20 border-2 border-white/40 mb-4 flex items-center justify-center text-3xl font-bold backdrop-blur-sm">
-                    Y
-                  </div>
-                  <h4 className="text-lg font-semibold">Your Name</h4>
-                  <p className="text-sm opacity-90 mt-1">Frontend Developer</p>
-                  <p className="text-xs opacity-75 mt-1">React • Tailwind • UI/UX</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Keep right column empty so the face stays fully visible */}
+        <div className="hidden md:block" />
       </div>
     </section>
   )

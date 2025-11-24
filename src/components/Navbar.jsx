@@ -30,26 +30,28 @@ export default function Navbar() {
   }, [])
 
   return (
-    <header className="glass sticky top-0 z-30 border-b border-purple-900/20">
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md accent-gradient flex items-center justify-center text-white font-bold shadow-lg">Y</div>
-          <h1 className="text-lg font-semibold gold-gradient-text">Your Name</h1>
-        </div>
+    <header className="glass sticky top-0 z-30 border-b border-purple-500/30 backdrop-blur-xl shadow-lg shadow-purple-500/10">
+      <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="#about" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl accent-gradient flex items-center justify-center text-white font-black shadow-lg group-hover:scale-110 transition-transform duration-300">
+            S
+          </div>
+          <h1 className="text-xl font-black gold-gradient-text hidden sm:block">Shiva Saini</h1>
+        </a>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <a className="hover:text-green-400 transition" href="#about">About</a>
-          <a className="hover:text-green-400 transition" href="#projects">Projects</a>
-          <a className="hover:text-green-400 transition" href="#contact">Contact</a>
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a className="text-cyan-100 hover:text-green-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-green-400 after:transition-all" href="#about">About</a>
+          <a className="text-cyan-100 hover:text-green-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-green-400 after:transition-all" href="#projects">Projects</a>
+          <a className="text-cyan-100 hover:text-green-400 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-green-400 after:transition-all" href="#contact">Contact</a>
           {isAdmin && (
-            <a className="hover:text-green-400 gold-gradient-text font-semibold transition flex items-center gap-1" href="/admin">
+            <a className="text-purple-300 hover:text-purple-200 gold-gradient-text font-bold transition flex items-center gap-2" href="/admin">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
               </svg>
               Admin
             </a>
           )}
-          <a className="px-4 py-2 accent-gradient text-white rounded-lg font-medium btn-gold-glow" href="#projects">Work with me</a>
+          <a className="px-6 py-2.5 accent-gradient text-white rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300" href="#contact">Hire Me</a>
         </nav>
 
         <div className="md:hidden">

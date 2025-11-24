@@ -1,11 +1,12 @@
 import React from 'react'
-import Navbar from './components/Navbar'
+import AnimatedNavbar from './components/AnimatedNavbar'
 import Hero from './components/Hero'
+import About from './components/About'
+import Skills from './components/Skills'
 import Projects from './components/Projects'
 import Footer from './components/Footer'
 import Contact from './components/Contact'
 import Admin from './components/admin/Admin'
-import VantaBackground from './components/VantaBackground'
 
 export default function App() {
   // Simple routing: show admin when path is /admin
@@ -14,19 +15,28 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="min-h-screen flex flex-col pb-24">
       <main className="flex-1">
         {/* Hero Section - Full Width */}
-        <Hero />
+        <section id="home">
+          <Hero />
+        </section>
         
-        {/* Other Sections - Constrained Width */}
+        {/* Other Sections */}
+        <About />
+        <Skills />
+        
         <div className="container mx-auto px-6">
-          <Projects />
-          <Contact />
+          <section id="projects">
+            <Projects />
+          </section>
+          <section id="contact">
+            <Contact />
+          </section>
         </div>
       </main>
       <Footer />
+      <AnimatedNavbar />
     </div>
   )
 }

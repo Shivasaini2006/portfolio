@@ -94,6 +94,39 @@ app.get('/api/messages', verifyToken, (req, res) => {
   res.json(msgs)
 })
 
+// POST /api/admin/change-password - change admin password
+app.post('/api/admin/change-password', verifyToken, (req, res) => {
+  const { email, currentPassword, newPassword } = req.body || {}
+  
+  if (!email || !currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Email, current password, and new password are required' })
+  }
+
+  // Verify current credentials
+  if (email !== ADMIN_EMAIL || currentPassword !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Current password is incorrect' })
+  }
+
+  // Validate new password
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters long' })
+  }
+
+  // In a production environment, you would update the password in a database
+  // For now, we'll just log the change since we're using environment variables
+  console.log(`Password change requested for ${email}`)
+  console.log(`⚠️  To persist this change, update ADMIN_PASSWORD environment variable to: ${newPassword}`)
+  
+  // Update the in-memory password (will reset on server restart)
+  process.env.ADMIN_PASSWORD = newPassword
+  
+  return res.json({ 
+    ok: true, 
+    message: 'Password changed successfully',
+    note: 'Password updated for current session. Update ADMIN_PASSWORD env var to persist across restarts.'
+  })
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)
   console.log(`Admin email: ${ADMIN_EMAIL}`)

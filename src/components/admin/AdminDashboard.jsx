@@ -1,6 +1,8 @@
 import React from 'react'
 import MessagesList from './MessagesList'
 import ProjectsManager from './ProjectsManager'
+import HiringManager from './HiringManager'
+import PasswordManager from './PasswordManager'
 
 export default function AdminDashboard({ adminEmail, onLogout }) {
   const [activeTab, setActiveTab] = React.useState('messages')
@@ -70,6 +72,44 @@ export default function AdminDashboard({ adminEmail, onLogout }) {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
               )}
             </button>
+
+            <button
+              onClick={() => setActiveTab('hiring')}
+              className={`px-6 py-3 font-medium transition relative ${
+                activeTab === 'hiring'
+                  ? 'text-yellow-400'
+                  : 'text-yellow-100/60 hover:text-yellow-100'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                Hiring
+              </div>
+              {activeTab === 'hiring' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('password')}
+              className={`px-6 py-3 font-medium transition relative ${
+                activeTab === 'password'
+                  ? 'text-yellow-400'
+                  : 'text-yellow-100/60 hover:text-yellow-100'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                Password
+              </div>
+              {activeTab === 'password' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -78,6 +118,8 @@ export default function AdminDashboard({ adminEmail, onLogout }) {
       <div className="container mx-auto px-6 py-8">
         {activeTab === 'messages' && <MessagesList />}
         {activeTab === 'projects' && <ProjectsManager />}
+        {activeTab === 'hiring' && <HiringManager />}
+        {activeTab === 'password' && <PasswordManager adminEmail={adminEmail} />}
       </div>
     </div>
   )
