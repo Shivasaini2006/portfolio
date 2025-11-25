@@ -9,21 +9,20 @@ export default function Skills() {
       skills: [
         { name: 'React', level: 90, icon: '⚛️' },
         { name: 'JavaScript', level: 85, icon: '📜' },
-        { name: 'Tailwind CSS', level: 95, icon: '🎨' },
+        { name: 'Tailwind CSS', level: 80,icon: '🎨' },
         { name: 'HTML/CSS', level: 90, icon: '🌐' },
-        { name: 'TypeScript', level: 75, icon: '📘' }
+        
       ]
     },
-    {
+    {     
       title: 'Backend',
       icon: '⚙️',
       color: 'green',
       skills: [
-        { name: 'Node.js', level: 85, icon: '🚀' },
-        { name: 'Express', level: 80, icon: '🛤️' },
-        { name: 'MongoDB', level: 75, icon: '🍃' },
-        { name: 'REST APIs', level: 85, icon: '🔌' },
-        { name: 'PostgreSQL', level: 70, icon: '🐘' }
+        { name: 'Node.js', level: 30, icon: '🚀' },
+        { name: 'MongoDB', level: 40, icon: '🍃' },
+        { name: 'REST APIs', level: 50, icon: '🔌' },
+        { name: 'SQL', level: 70, icon: '🐘' }
       ]
     },
     {
@@ -32,9 +31,9 @@ export default function Skills() {
       color: 'cyan',
       skills: [
         { name: 'Git/GitHub', level: 85, icon: '📦' },
-        { name: 'Vite', level: 90, icon: '⚡' },
-        { name: 'Webpack', level: 70, icon: '📦' },
-        { name: 'Docker', level: 65, icon: '🐳' },
+        { name: 'Vite', level: 50, icon: '⚡' },
+        { name: 'Webpack', level: 30, icon: '📦' },
+        
         { name: 'VS Code', level: 95, icon: '💻' }
       ]
     }
@@ -97,12 +96,11 @@ export default function Skills() {
         <div className="mt-12 text-center">
           <p className="text-sm text-cyan-100/60 mb-4">Also familiar with:</p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-sm text-purple-200 font-medium">Redux</span>
-            <span className="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-sm text-green-200 font-medium">Next.js</span>
-            <span className="px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-sm text-cyan-200 font-medium">GraphQL</span>
-            <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-sm text-purple-200 font-medium">Jest</span>
-            <span className="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-sm text-green-200 font-medium">Firebase</span>
-            <span className="px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-sm text-cyan-200 font-medium">AWS</span>
+            <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-sm text-purple-200 font-medium">C/C++</span>
+            <span className="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-full text-sm text-green-200 font-medium">PHP</span>
+            <span className="px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-sm text-cyan-200 font-medium">Python</span>
+            <span className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-sm text-purple-200 font-medium">AI/ML</span>
+
           </div>
         </div>
       </div>

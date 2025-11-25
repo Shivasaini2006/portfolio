@@ -253,14 +253,14 @@ p, span, div {
   height: 98px;
   margin-bottom: 2px;
   line-height: 100px;
-  width: 25vw;
+  width: 20vw;
   text-align: center;
   color: #555;
   transition: background-color 0.5s 0.2s ease, color 0.3s ease;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   font-weight: 800;
   transform: translateY(100%);
   animation: pop 0.5s 1 forwards;
@@ -268,9 +268,8 @@ p, span, div {
 
 @media (min-width: 768px) {
   .animated-nav-item {
-    width: 20vw;
-    font-size: 12px;
-    letter-spacing: 4px;
+    font-size: 11px;
+    letter-spacing: 3px;
   }
 }
 

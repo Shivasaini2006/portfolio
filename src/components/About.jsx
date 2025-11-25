@@ -17,37 +17,24 @@ export default function About() {
           <div className="glass p-8 md:p-12 rounded-3xl border border-purple-500/20">
             <div className="space-y-6">
               <p className="text-lg text-cyan-100/90 leading-relaxed">
-                Hi! I'm <span className="font-semibold gold-gradient-text">Shiva Saini</span>, a passionate Full-Stack Developer 
-                with a keen eye for creating beautiful, performant, and user-friendly web applications.
+                Hi, I'm <span className="font-semibold gold-gradient-text">Shiva Saini</span>, a dedicated Full Stack Developer 
+                and final-year BCA student with hands-on experience in building modern, responsive, and user-centric web solutions.
               </p>
               
               <p className="text-lg text-cyan-100/90 leading-relaxed">
-                I specialize in building modern web experiences using cutting-edge technologies like React, Node.js, 
-                and Tailwind CSS. My approach combines clean code, intuitive design, and scalable architecture to 
-                deliver solutions that not only meet requirements but exceed expectations.
+                I specialize in <span className="text-purple-300 font-semibold">React</span>, <span className="text-green-300 font-semibold">Node.js</span>, 
+                <span className="text-green-300 font-semibold"> MongoDB</span>, and <span className="text-cyan-300 font-semibold">Tailwind CSS</span>, 
+                and I enjoy creating efficient applications that solve real-world problems.
               </p>
 
               <p className="text-lg text-cyan-100/90 leading-relaxed">
-                When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, 
-                or sharing knowledge with the developer community. I believe in continuous learning and staying updated 
-                with the latest trends in web development.
+                With over a year of practical experience, I'm constantly improving my backend development skills and exploring 
+                the world of AI/ML to build smarter, more scalable systems. I love learning, experimenting, and turning ideas 
+                into working products.
               </p>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6">
-                <div className="text-center p-4 bg-purple-900/20 rounded-xl border border-purple-500/20">
-                  <div className="text-3xl font-bold gold-gradient-text mb-2">2+</div>
-                  <div className="text-sm text-purple-100/70">Years Experience</div>
-                </div>
-                <div className="text-center p-4 bg-green-900/20 rounded-xl border border-green-500/20">
-                  <div className="text-3xl font-bold gold-gradient-text mb-2">15+</div>
-                  <div className="text-sm text-green-100/70">Projects Completed</div>
-                </div>
-                <div className="text-center p-4 bg-cyan-900/20 rounded-xl border border-cyan-500/20 col-span-2 md:col-span-1">
-                  <div className="text-3xl font-bold gold-gradient-text mb-2">100%</div>
-                  <div className="text-sm text-cyan-100/70">Client Satisfaction</div>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>

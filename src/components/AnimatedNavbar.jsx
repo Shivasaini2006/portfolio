@@ -8,11 +8,21 @@ const AnimatedNavbar = () => {
     { label: 'Home', href: '#home' },
     { label: 'About me', href: '#about' },
     { label: 'Portfolio', href: '#projects' },
-    { label: 'Contact me', href: '#contact' }
+    { label: 'Contact me', href: '#contact' },
+    { label: 'Resume', href: '/ShivaResume.pdf', download: true }
   ];
 
   const handleClick = (index) => {
     setActiveIndex(index);
+    // Handle download link
+    if (navItems[index].download) {
+      const link = document.createElement('a');
+      link.href = navItems[index].href;
+      link.download = 'Shiva_Resume.pdf';
+      link.click();
+      return;
+    }
+    // Handle regular navigation
     const section = document.querySelector(navItems[index].href);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
@@ -20,11 +30,11 @@ const AnimatedNavbar = () => {
   };
 
   const handleMouseEnter = (index) => {
-    setSlidePosition(index * 25);
+    setSlidePosition(index * 20);
   };
 
   const handleMouseLeave = () => {
-    setSlidePosition(-25);
+    setSlidePosition(-20);
   };
 
   useEffect(() => {
@@ -42,6 +52,8 @@ const AnimatedNavbar = () => {
     );
 
     navItems.forEach(item => {
+      // Skip the download link, only observe section anchors
+      if (item.download) return;
       const section = document.querySelector(item.href);
       if (section) observer.observe(section);
     });
