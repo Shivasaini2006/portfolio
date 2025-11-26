@@ -4,14 +4,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "server": "node server/index.cjs"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "next": "14.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "resend": "^2.0.0",
@@ -19,11 +20,9 @@
     "vanta": "^0.5.24"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.4.8",
-    "vite": "^5.0.0"
+    "tailwindcss": "^3.4.8"
   },
   "engines": {
     "node": "20.x"
