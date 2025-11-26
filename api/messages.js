@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { Resend } from 'resend';
 
 // Ephemeral storage path (serverless /tmp)
 const DATA_FILE = path.join('/tmp', 'messages.json');
@@ -29,7 +28,32 @@ function verifyToken(req) {
   return !!token; // Placeholder auth; replace for production
 }
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+async function sendEmail(name, email, message, timestamp) {
+  if (!process.env.RESEND_API_KEY || !process.env.CONTACT_TO_EMAIL || !process.env.CONTACT_FROM_EMAIL) {
+    return false;
+  }
+  
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
+    await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL,
+      to: process.env.CONTACT_TO_EMAIL,
+      subject: `New portfolio contact from ${name}`,
+      html: `<h2>New Contact Message</h2>
+             <p><strong>Name:</strong> ${name}</p>
+             <p><strong>Email:</strong> ${email}</p>
+             <p><strong>Message:</strong></p>
+             <p>${String(message).replace(/</g, '&lt;')}</p>
+             <p><em>Received at ${new Date(timestamp).toLocaleString()}</em></p>`
+    });
+    return true;
+  } catch (err) {
+    console.error('Email send failed:', err);
+    return false;
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -51,25 +75,7 @@ export default async function handler(req, res) {
       msgs.unshift(newMsg);
       writeMessages(msgs);
 
-      let emailSent = false;
-      if (resend && process.env.CONTACT_TO_EMAIL && process.env.CONTACT_FROM_EMAIL) {
-        try {
-          await resend.emails.send({
-            from: process.env.CONTACT_FROM_EMAIL,
-            to: process.env.CONTACT_TO_EMAIL,
-            subject: `New portfolio contact from ${name}`,
-            html: `<h2>New Contact Message</h2>
-                   <p><strong>Name:</strong> ${name}</p>
-                   <p><strong>Email:</strong> ${email}</p>
-                   <p><strong>Message:</strong></p>
-                   <p>${String(message).replace(/</g, '&lt;')}</p>
-                   <p><em>Received at ${new Date(newMsg.createdAt).toLocaleString()}</em></p>`
-          });
-          emailSent = true;
-        } catch (err) {
-          console.error('Email send failed:', err);
-        }
-      }
+      const emailSent = await sendEmail(name, email, message, newMsg.createdAt);
 
       return res.status(201).json({ ok: true, message: 'Message saved', emailSent });
     } catch (e) {
