@@ -4,11 +4,13 @@ export default function Contact() {
   const [form, setForm] = React.useState({ name: '', email: '', message: '' })
   const [status, setStatus] = React.useState(null)
 
+  const API_BASE = import.meta.env.VITE_API_BASE || ''
+
   async function submit(e) {
     e.preventDefault()
     setStatus('sending')
     try {
-      const res = await fetch('http://localhost:4000/api/messages', {
+      const res = await fetch(`${API_BASE}/api/messages`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(form)

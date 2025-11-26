@@ -28,7 +28,8 @@ export default function PasswordManager({ adminEmail }) {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const res = await fetch('http://localhost:4000/api/admin/change-password', {
+      const API_BASE = import.meta.env.VITE_API_BASE || ''
+      const res = await fetch(`${API_BASE}/api/admin/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export default function PasswordManager({ adminEmail }) {
         },
         body: JSON.stringify({
           email: adminEmail,
-          currentPassword: passwordForm.currentPassword,
+          oldPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword
         })
       });

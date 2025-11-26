@@ -15,7 +15,8 @@ export default function MessagesList() {
     try {
       const token = localStorage.getItem('adminToken')
       const headers = token ? { 'x-admin-token': token } : {}
-      const res = await fetch('http://localhost:4000/api/messages', { headers })
+      const API_BASE = import.meta.env.VITE_API_BASE || ''
+      const res = await fetch(`${API_BASE}/api/messages`, { headers })
       
       if (res.status === 401) {
         throw new Error('Session expired - please login again')

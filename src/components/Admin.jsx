@@ -25,7 +25,7 @@ export default function Admin() {
     e.preventDefault()
     setLoginError(null)
     try {
-      const res = await fetch('http://localhost:4000/api/admin/login', {
+      const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(loginForm)
@@ -50,7 +50,7 @@ export default function Admin() {
     setError(null)
     try {
       const headers = authToken ? { 'x-admin-token': authToken } : {}
-      const res = await fetch('http://localhost:4000/api/messages', { headers })
+      const res = await fetch('/api/messages', { headers })
       if (res.status === 401) {
         // Token invalid, logout
         handleLogout()
