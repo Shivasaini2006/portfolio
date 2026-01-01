@@ -136,6 +136,16 @@ app.post('/api/admin/change-password', verifyToken, (req, res) => {
   })
 })
 
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')))
+  
+  // Handle React routing - return index.html for all non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'))
+  })
+}
+
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)
   console.log(`Admin email: ${ADMIN_EMAIL}`)
