@@ -13,7 +13,7 @@ const DATA_FILE = path.join(__dirname, 'messages.json')
 
 // Admin credentials (change these for production!)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'shivasaini1938@gmail.com'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Shiva@2416'
 const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex')
 
 app.use(cors())
