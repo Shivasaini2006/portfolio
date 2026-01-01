@@ -1,7 +1,12 @@
-const express = require('express')
-const fs = require('fs')
-const path = require('path')
-const cors = require('cors')
+import express from 'express'
+import fs from 'fs'
+import path from 'path'
+import cors from 'cors'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 4000

@@ -86,9 +86,9 @@ export default function MessagesList() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-yellow-50">{m.name}</h3>
-                      <a href={`mailto:${m.email}`} className="text-sm text-yellow-400 hover:text-yellow-300">
+                      <p className="text-sm text-yellow-100/60">
                         {m.email}
-                      </a>
+                      </p>
                     </div>
                   </div>
                 </div>

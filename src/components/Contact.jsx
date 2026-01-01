@@ -1,4 +1,5 @@
 import React from 'react'
+import emailjs from '@emailjs/browser'
 
 export default function Contact() {
   const [form, setForm] = React.useState({ name: '', email: '', message: '' })
@@ -10,12 +11,33 @@ export default function Contact() {
     e.preventDefault()
     setStatus('sending')
     try {
+      // Send email via EmailJS
+      const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
+      const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+      const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+
+      if (emailjsServiceId && emailjsTemplateId && emailjsPublicKey) {
+        await emailjs.send(
+          emailjsServiceId,
+          emailjsTemplateId,
+          {
+            from_name: form.name,
+            from_email: form.email,
+            message: form.message,
+            to_name: 'Shiva Saini',
+          },
+          emailjsPublicKey
+        )
+      }
+
+      // Save to database
       const res = await fetch(`${API_BASE}/api/messages`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(form)
       })
       if (!res.ok) throw new Error('Failed')
+      
       setStatus('sent')
       setForm({ name: '', email: '', message: '' })
     } catch (err) {

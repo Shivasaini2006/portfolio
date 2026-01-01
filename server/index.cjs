@@ -4,6 +4,9 @@ const path = require('path')
 const cors = require('cors')
 const crypto = require('crypto')
 
+// Load environment variables from .env file
+require('dotenv').config()
+
 const app = express()
 const PORT = process.env.PORT || 4000
 const DATA_FILE = path.join(__dirname, 'messages.json')
@@ -15,6 +18,12 @@ const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('he
 
 app.use(cors())
 app.use(express.json())
+
+// Add request logging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`)
+  next()
+})
 
 // Ensure data file exists
 if (!fs.existsSync(DATA_FILE)) {
