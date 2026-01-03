@@ -1,76 +1,104 @@
-# Portfolio
+# Portfolio - Separated Frontend & Backend
 
-Modern React + Vite portfolio with Tailwind CSS and serverless admin + contact email notifications.
+Modern React + Vite portfolio with Express.js backend, admin panel, and EmailJS integration.
+
+## 📁 Project Structure
+
+```
+portfolio/
+├── frontend/          # React + Vite frontend
+│   ├── src/          # React components
+│   ├── public/       # Static assets
+│   ├── package.json
+│   └── vite.config.js
+└── backend/          # Express.js backend
+    ├── server/       # API routes & logic
+    ├── package.json
+    └── .env         # Environment variables
+```
 
 ## Features
-- Hero section with background image
+- Hero section with 3D background animations
 - Sections: About, Skills, Projects, Contact
-- Animated bottom navigation + resume download
-- Admin panel (login, messages viewer, password change)
-- Serverless API routes: login, messages (GET/POST), change-password
-- Optional email notification on new contact (Resend)
+- Animated navigation + footer
+- Admin panel (login, message management, password change)
+- EmailJS integration for contact form
+- JWT authentication
+- Express API routes for backend
 
-## Development
+## 🚀 Development
+
+### Frontend (Port 3000)
 ```bash
+cd frontend
 npm install
-npm run dev        # Frontend only (no /api/*)
-vercel dev         # Frontend + serverless API routes
+npm run dev
 ```
-Use `vercel dev` to exercise `/api/*` endpoints locally.
 
-## Serverless API Overview
+### Backend (Port 4000)
+```bash
+cd backend
+npm install
+npm start
+```
+
+Run both servers simultaneously for full functionality.
+
+## 📦 Production Build
+
+### 1. Build Frontend
+```bash
+cd frontend
+npm install
+npm run build  # Creates dist in backend/dist
+```
+
+### 2. Run Backend (serves frontend + API)
+```bash
+cd backend
+npm install
+npm start
+```
+
+Backend will serve the built frontend files and handle all API routes.
+
+## 🌐 Environment Variables
+
+Create `backend/.env` with these variables:
+```
+# Backend Server
+PORT=4000
+ADMIN_EMAIL=shivasaini1938@gmail.com
+ADMIN_PASSWORD=Shiva@2416
+JWT_SECRET=your-long-random-secret-key-here
+
+# EmailJS (get from https://emailjs.com)
+VITE_EMAILJS_SERVICE_ID=service_b11awyr
+VITE_EMAILJS_TEMPLATE_ID=template_7f7n2ep
+VITE_EMAILJS_PUBLIC_KEY=oJphlX6TL4wVOhtkG
+```
+
+## API Routes
+
 | Route | Method | Description |
 |-------|--------|-------------|
-| `/api/admin/login` | POST | Validates admin credentials, returns token |
-| `/api/messages` | GET | Returns stored contact messages (auth required) |
-| `/api/messages` | POST | Stores new message + optional email notification |
-| `/api/admin/change-password` | POST | Changes admin password (non-persistent) |
+| `/api/admin/login` | POST | Admin login, returns JWT token |
+| `/api/messages` | GET | Get all messages (auth required) |
+| `/api/messages` | POST | Submit contact form message |
+| `/api/admin/change-password` | POST | Change admin password |
 
-## Environment Variables
-Define in Vercel project settings or `.env` for `vercel dev`:
-```
-ADMIN_EMAIL=shivasaini1938@gmail.com
-ADMIN_PASSWORD=strongpassword
-AUTH_SECRET=some-long-hmac-secret
-JWT_SECRET=some-long-jwt-secret
-RESEND_API_KEY=your_resend_api_key_here
-CONTACT_TO_EMAIL=shivasaini1938@gmail.com
-CONTACT_FROM_EMAIL=Portfolio Contact <no-reply@yourdomain.com>
-VITE_API_BASE=http://localhost:3000   # Use for local dev with vercel dev; remove/leave blank in production
-```
-Notes:
-- Stable `AUTH_SECRET` / `JWT_SECRET` prevents token invalidation on cold starts.
-- Email is sent only if Resend API + to/from emails are configured; otherwise message is stored silently.
+## 🚢 Deployment
 
-## Persistence Caveat
-Messages stored in `/tmp/messages.json` are ephemeral (instance-local). Use a real data store for production:
-- MongoDB Atlas / Postgres / MySQL
-- Upstash Redis / Vercel KV
-- Durable edge storage
+### Railway / Render
+1. Connect GitHub repository
+2. Set root directory to `backend`
+3. Build command: `cd ../frontend && npm install && npm run build && cd ../backend && npm install`
+4. Start command: `npm start`
+5. Add environment variables in dashboard
 
-### Example Migration to MongoDB
-1. Create Atlas cluster, get URI.
-2. Add `MONGODB_URI` env var.
-3. `npm install mongodb`.
-4. Replace file operations with a cached Mongo client.
-
-### Password Storage Hardening
-Use bcrypt & persistent DB:
-```
-npm install bcrypt
-```
-Hash new password; compare on login; never store plaintext.
-
-## Troubleshooting
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| 404 on `/api/*` with `npm run dev` | Vite only | Use `vercel dev` |
-| No email received | Missing env vars | Set RESEND_API_KEY & contact emails |
-| Token invalid after reload | Rotating secrets | Set stable AUTH_SECRET/JWT_SECRET |
-
-## Deployment
-Push to GitHub, connect Vercel, set env vars before first prod deploy. `vercel.json` governs build.
+### Environment Variables for Deployment
+Add all variables from backend/.env to your hosting platform's environment settings.
 
 ## License
-Personal portfolio project. All content © You.
+Personal portfolio project.
 
