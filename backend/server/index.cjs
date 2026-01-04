@@ -48,9 +48,7 @@ function writeMessages(msgs) {
   }
 }
 
-app.get('/', (req, res) => {
-  res.send({ status: 'ok', message: 'Portfolio backend running' })
-})
+// API Routes (must be before static file serving)
 
 // POST /api/admin/login - admin login
 app.post('/api/admin/login', (req, res) => {
