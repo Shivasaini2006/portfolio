@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": 1704384000000,
+    "title": "Portfolio Website",
+    "description": "A modern, responsive portfolio website built with React and Tailwind CSS. Features include admin panel for managing projects and messages, contact form with email integration, and smooth animations.",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23667eea' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'%3EPortfolio%3C/text%3E%3C/svg%3E",
+    "liveLink": "https://shiva-portfolio-6wmg.onrender.com",
+    "githubLink": "https://github.com/Shivasaini2006/portfolio",
+    "technologies": ["React", "Tailwind CSS", "Node.js", "Express", "EmailJS"],
+    "featured": true,
+    "createdAt": "2026-01-04T00:00:00.000Z"
+  },
+  {
+    "id": 1704297600000,
+    "title": "E-Commerce Platform",
+    "description": "Full-stack e-commerce application with product catalog, shopping cart, user authentication, and payment integration. Built with modern web technologies.",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%2364748b' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'%3EE-Commerce%3C/text%3E%3C/svg%3E",
+    "liveLink": "",
+    "githubLink": "",
+    "technologies": ["React", "MongoDB", "Express", "Node.js", "Stripe"],
+    "featured": true,
+    "createdAt": "2026-01-03T00:00:00.000Z"
+  },
+  {
+    "id": 1704211200000,
+    "title": "Task Management App",
+    "description": "Collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
+    "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%2310b981' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dominant-baseline='middle'%3ETask Manager%3C/text%3E%3C/svg%3E",
+    "liveLink": "",
+    "githubLink": "",
+    "technologies": ["React", "Firebase", "Material-UI", "Redux"],
+    "featured": false,
+    "createdAt": "2026-01-02T00:00:00.000Z"
+  }
+]
