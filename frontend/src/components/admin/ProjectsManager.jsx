@@ -142,9 +142,9 @@ export default function ProjectsManager() {
   function handleImageChange(e) {
     const file = e.target.files[0]
     if (file) {
-      // Check file size (max 500KB to avoid 413 errors)
-      if (file.size > 500 * 1024) {
-        alert('Image size should be less than 500KB. Please use an image URL for larger images or compress your image.')
+      // Check file size (max 1MB file = ~1.3MB base64)
+      if (file.size > 1024 * 1024) {
+        alert('Image size should be less than 1MB. Please compress your image or use an image URL instead.')
         return
       }
 
@@ -157,6 +157,12 @@ export default function ProjectsManager() {
       const reader = new FileReader()
       reader.onloadend = () => {
         const base64String = reader.result
+        // Base64 is ~33% larger than original file
+        const base64Size = base64String.length
+        if (base64Size > 2 * 1024 * 1024) {
+          alert('Encoded image too large. Please use a smaller image or paste an image URL instead.')
+          return
+        }
         setFormData({...formData, image: base64String})
         setImagePreview(base64String)
       }
@@ -281,7 +287,7 @@ export default function ProjectsManager() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                       </svg>
-                      Upload Small Image (max 500KB)
+                      Upload Image (max 1MB)
                     </div>
                     <input
                       type="file"

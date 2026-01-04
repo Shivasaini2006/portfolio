@@ -18,8 +18,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Shiva@2416'
 const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex')
 
 app.use(cors())
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // Add request logging
 app.use((req, res, next) => {
