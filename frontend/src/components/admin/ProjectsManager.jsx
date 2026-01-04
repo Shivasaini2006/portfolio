@@ -78,6 +78,8 @@ export default function ProjectsManager() {
       const url = isEdit ? `/api/projects/${projectData.id}` : '/api/projects'
       const method = isEdit ? 'PUT' : 'POST'
       
+      console.log('Saving project:', { url, method, hasToken: !!token, projectData })
+      
       const response = await fetch(url, {
         method,
         headers: {
@@ -93,13 +95,14 @@ export default function ProjectsManager() {
         window.dispatchEvent(new Event('projectsUpdated'))
         return true
       } else {
-        const error = await response.json()
-        alert(error.error || 'Failed to save project')
+        const errorData = await response.json()
+        console.error('Server error:', errorData)
+        alert(errorData.error || 'Failed to save project')
         return false
       }
     } catch (error) {
       console.error('Error saving project:', error)
-      alert('Failed to save project')
+      alert('Failed to save project: ' + error.message)
       return false
     }
   }
