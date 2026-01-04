@@ -17,7 +17,40 @@ export default function ProjectsManager() {
 
   React.useEffect(() => {
     loadProjects()
+    migrateLocalStorageProjects()
   }, [])
+
+  async function migrateLocalStorageProjects() {
+    // One-time migration from localStorage to server
+    const localProjects = localStorage.getItem('portfolioProjects')
+    if (localProjects) {
+      try {
+        const projects = JSON.parse(localProjects)
+        if (projects.length > 0) {
+          const token = localStorage.getItem('adminToken')
+          if (token) {
+            console.log('Migrating', projects.length, 'projects from localStorage to server...')
+            for (const project of projects) {
+              await fetch('/api/projects', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-admin-token': token
+                },
+                body: JSON.stringify(project)
+              })
+            }
+            console.log('Migration complete!')
+            // Remove from localStorage after successful migration
+            localStorage.removeItem('portfolioProjects')
+            await loadProjects()
+          }
+        }
+      } catch (error) {
+        console.error('Migration error:', error)
+      }
+    }
+  }
 
   async function loadProjects() {
     try {
