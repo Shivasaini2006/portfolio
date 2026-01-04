@@ -14,31 +14,35 @@ export default function Projects() {
   React.useEffect(() => {
     loadProjects()
     
-    // Listen for storage changes to update projects in real-time
-    const handleStorageChange = () => {
+    // Listen for project updates from admin panel
+    const handleProjectsUpdate = () => {
       loadProjects()
     }
     
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('projectsUpdated', handleStorageChange)
+    window.addEventListener('projectsUpdated', handleProjectsUpdate)
     
     return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('projectsUpdated', handleStorageChange)
+      window.removeEventListener('projectsUpdated', handleProjectsUpdate)
     }
   }, [])
 
-  function loadProjects() {
-    const savedProjects = localStorage.getItem('portfolioProjects')
-    if (savedProjects) {
-      const parsedProjects = JSON.parse(savedProjects)
-      // Sort by featured first, then by creation date
-      const sortedProjects = parsedProjects.sort((a, b) => {
-        if (a.featured && !b.featured) return -1
-        if (!a.featured && b.featured) return 1
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      })
-      setProjects(sortedProjects)
+  async function loadProjects() {
+    try {
+      const response = await fetch('/api/projects')
+      if (response.ok) {
+        const data = await response.json()
+        // Sort by featured first, then by creation date
+        const sortedProjects = data.sort((a, b) => {
+          if (a.featured && !b.featured) return -1
+          if (!a.featured && b.featured) return 1
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        })
+        setProjects(sortedProjects)
+      } else {
+        console.error('Failed to load projects')
+      }
+    } catch (error) {
+      console.error('Error loading projects:', error)
     }
   }
 

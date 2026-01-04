@@ -19,19 +19,88 @@ export default function ProjectsManager() {
     loadProjects()
   }, [])
 
-  function loadProjects() {
-    const savedProjects = localStorage.getItem('portfolioProjects')
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects))
+  async function loadProjects() {
+    try {
+      const response = await fetch('/api/projects')
+      if (response.ok) {
+        const data = await response.json()
+        setProjects(data)
+      } else {
+        console.error('Failed to load projects')
+      }
+    } catch (error) {
+      console.error('Error loading projects:', error)
     }
   }
 
-  function saveProjects(newProjects) {
-    localStorage.setItem('portfolioProjects', JSON.stringify(newProjects))
-    setProjects(newProjects)
-    
-    // Dispatch custom event to notify the Projects component
-    window.dispatchEvent(new Event('projectsUpdated'))
+  async function saveProject(projectData) {
+    const token = localStorage.getItem('adminToken')
+    if (!token) {
+      alert('Please login first')
+      return false
+    }
+
+    try {
+      const isEdit = projectData.id && projects.find(p => p.id === projectData.id)
+      const url = isEdit ? `/api/projects/${projectData.id}` : '/api/projects'
+      const method = isEdit ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': token
+        },
+        body: JSON.stringify(projectData)
+      })
+
+      if (response.ok) {
+        await loadProjects()
+        // Dispatch custom event to notify the Projects component
+        window.dispatchEvent(new Event('projectsUpdated'))
+        return true
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to save project')
+        return false
+      }
+    } catch (error) {
+      console.error('Error saving project:', error)
+      alert('Failed to save project')
+      return false
+    }
+  }
+
+  async function deleteProject(projectId) {
+    const token = localStorage.getItem('adminToken')
+    if (!token) {
+      alert('Please login first')
+      return false
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-admin-token': token
+        }
+      })
+
+      if (response.ok) {
+        await loadProjects()
+        // Dispatch custom event to notify the Projects component
+        window.dispatchEvent(new Event('projectsUpdated'))
+        return true
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to delete project')
+        return false
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error)
+      alert('Failed to delete project')
+      return false
+    }
   }
 
   function handleImageChange(e) {
@@ -63,21 +132,23 @@ export default function ProjectsManager() {
     e.preventDefault()
     
     const techArray = formData.technologies.split(',').map(t => t.trim()).filter(t => t)
-    const newProject = {
-      id: editingProject ? editingProject.id : Date.now(),
-      ...formData,
+    const projectData = {
+      id: editingProject ? editingProject.id : undefined,
+      title: formData.title,
+      description: formData.description,
+      image: formData.image,
+      liveLink: formData.liveLink,
+      githubLink: formData.githubLink,
       technologies: techArray,
-      createdAt: editingProject ? editingProject.createdAt : new Date().toISOString()
+      featured: formData.featured,
+      createdAt: editingProject ? editingProject.createdAt : undefined
     }
 
-    if (editingProject) {
-      const updatedProjects = projects.map(p => p.id === editingProject.id ? newProject : p)
-      saveProjects(updatedProjects)
-    } else {
-      saveProjects([...projects, newProject])
-    }
-
-    resetForm()
+    saveProject(projectData).then(success => {
+      if (success) {
+        resetForm()
+      }
+    })
   }
 
   function handleEdit(project) {
@@ -97,8 +168,7 @@ export default function ProjectsManager() {
 
   function handleDelete(projectId) {
     if (confirm('Are you sure you want to delete this project?')) {
-      const updatedProjects = projects.filter(p => p.id !== projectId)
-      saveProjects(updatedProjects)
+      deleteProject(projectId)
     }
   }
 
