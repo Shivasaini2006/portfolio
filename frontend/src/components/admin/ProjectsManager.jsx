@@ -142,9 +142,9 @@ export default function ProjectsManager() {
   function handleImageChange(e) {
     const file = e.target.files[0]
     if (file) {
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Image size should be less than 5MB')
+      // Check file size (max 500KB to avoid 413 errors)
+      if (file.size > 500 * 1024) {
+        alert('Image size should be less than 500KB. Please use an image URL for larger images or compress your image.')
         return
       }
 
@@ -259,14 +259,29 @@ export default function ProjectsManager() {
               </div>
 
               <div>
-                <label className="block text-sm text-yellow-100/70 mb-2">Project Image *</label>
-                <div className="flex gap-2">
-                  <label className="flex-1 cursor-pointer">
+                <label className="block text-sm text-yellow-100/70 mb-2">Project Image</label>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={formData.image.startsWith('data:') ? '' : formData.image}
+                    onChange={e => {
+                      setFormData({...formData, image: e.target.value})
+                      setImagePreview(e.target.value)
+                    }}
+                    className="w-full px-4 py-3 border-2 border-yellow-900/30 bg-black/40 text-yellow-50 rounded-xl focus:border-yellow-500 focus:outline-none transition placeholder-yellow-100/50"
+                    placeholder="https://example.com/image.jpg or paste image URL"
+                  />
+                  <div className="flex gap-2 items-center">
+                    <div className="flex-1 border-t border-yellow-900/30"></div>
+                    <span className="text-xs text-yellow-100/50">OR</span>
+                    <div className="flex-1 border-t border-yellow-900/30"></div>
+                  </div>
+                  <label className="cursor-pointer block">
                     <div className="w-full px-4 py-3 border-2 border-yellow-900/30 bg-black/40 text-yellow-100/70 rounded-xl hover:border-yellow-500 transition flex items-center justify-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                       </svg>
-                      {imagePreview ? 'Change Image' : 'Upload Image'}
+                      Upload Small Image (max 500KB)
                     </div>
                     <input
                       type="file"
