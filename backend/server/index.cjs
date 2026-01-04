@@ -10,6 +10,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const app = express()
 const PORT = process.env.PORT || 4000
 const DATA_FILE = path.join(__dirname, 'messages.json')
+const PROJECTS_FILE = path.join(__dirname, 'projects.json')
 
 // Admin credentials (change these for production!)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'shivasaini1938@gmail.com'
@@ -30,6 +31,10 @@ if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, '[]')
 }
 
+if (!fs.existsSync(PROJECTS_FILE)) {
+  fs.writeFileSync(PROJECTS_FILE, '[]')
+}
+
 function readMessages() {
   try {
     const raw = fs.readFileSync(DATA_FILE, 'utf8')
@@ -45,6 +50,24 @@ function writeMessages(msgs) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2))
   } catch (e) {
     console.error('Failed to write messages:', e)
+  }
+}
+
+function readProjects() {
+  try {
+    const raw = fs.readFileSync(PROJECTS_FILE, 'utf8')
+    return JSON.parse(raw || '[]')
+  } catch (e) {
+    console.error('Failed to read projects:', e)
+    return []
+  }
+}
+
+function writeProjects(projects) {
+  try {
+    fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2))
+  } catch (e) {
+    console.error('Failed to write projects:', e)
   }
 }
 
@@ -99,6 +122,87 @@ app.post('/api/messages', (req, res) => {
 app.get('/api/messages', verifyToken, (req, res) => {
   const msgs = readMessages()
   res.json(msgs)
+})
+
+// GET /api/projects - public endpoint to get all projects
+app.get('/api/projects', (req, res) => {
+  const projects = readProjects()
+  res.json(projects)
+})
+
+// POST /api/projects - protected admin endpoint to create project
+app.post('/api/projects', verifyToken, (req, res) => {
+  const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
+  
+  if (!title || !description) {
+    return res.status(400).json({ error: 'Title and description are required' })
+  }
+
+  const projects = readProjects()
+  const newProject = {
+    id: Date.now(),
+    title,
+    description,
+    image: image || '',
+    liveLink: liveLink || '',
+    githubLink: githubLink || '',
+    technologies: technologies || [],
+    featured: featured || false,
+    createdAt: new Date().toISOString()
+  }
+  
+  projects.push(newProject)
+  writeProjects(projects)
+  
+  return res.status(201).json({ ok: true, project: newProject })
+})
+
+// PUT /api/projects/:id - protected admin endpoint to update project
+app.put('/api/projects/:id', verifyToken, (req, res) => {
+  const projectId = parseInt(req.params.id)
+  const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
+  
+  if (!title || !description) {
+    return res.status(400).json({ error: 'Title and description are required' })
+  }
+
+  const projects = readProjects()
+  const projectIndex = projects.findIndex(p => p.id === projectId)
+  
+  if (projectIndex === -1) {
+    return res.status(404).json({ error: 'Project not found' })
+  }
+
+  const updatedProject = {
+    ...projects[projectIndex],
+    title,
+    description,
+    image: image || '',
+    liveLink: liveLink || '',
+    githubLink: githubLink || '',
+    technologies: technologies || [],
+    featured: featured || false
+  }
+  
+  projects[projectIndex] = updatedProject
+  writeProjects(projects)
+  
+  return res.json({ ok: true, project: updatedProject })
+})
+
+// DELETE /api/projects/:id - protected admin endpoint to delete project
+app.delete('/api/projects/:id', verifyToken, (req, res) => {
+  const projectId = parseInt(req.params.id)
+  
+  const projects = readProjects()
+  const filteredProjects = projects.filter(p => p.id !== projectId)
+  
+  if (filteredProjects.length === projects.length) {
+    return res.status(404).json({ error: 'Project not found' })
+  }
+  
+  writeProjects(filteredProjects)
+  return res.json({ ok: true, message: 'Project deleted' })
 })
 
 // POST /api/admin/change-password - change admin password
