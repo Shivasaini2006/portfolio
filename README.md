@@ -62,21 +62,7 @@ npm start
 
 Backend will serve the built frontend files and handle all API routes.
 
-## 🌐 Environment Variables
 
-Create `backend/.env` with these variables:
-```
-# Backend Server
-PORT=4000
-ADMIN_EMAIL=shivasaini1938@gmail.com
-ADMIN_PASSWORD=Shiva@2416
-JWT_SECRET=your-long-random-secret-key-here
-
-# EmailJS (get from https://emailjs.com)
-VITE_EMAILJS_SERVICE_ID=service_b11awyr
-VITE_EMAILJS_TEMPLATE_ID=template_7f7n2ep
-VITE_EMAILJS_PUBLIC_KEY=oJphlX6TL4wVOhtkG
-```
 
 ## API Routes
 
