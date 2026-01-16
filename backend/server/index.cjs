@@ -1,90 +1,55 @@
 const express = require('express')
-const fs = require('fs')
 const path = require('path')
 const cors = require('cors')
 const crypto = require('crypto')
 
-// Load environment variables from .env file in backend folder
-require('dotenv').config({ path: path.join(__dirname, '../.env') })
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, '../../.env') })
+
+// MongoDB connection and models
+const { connectDB } = require('./db')
+const Message = require('./models/Message')
+const Project = require('./models/Project')
+const Admin = require('./models/Admin')
 
 const app = express()
 const PORT = process.env.PORT || 4000
-const DATA_FILE = path.join(__dirname, 'messages.json')
-const PROJECTS_FILE = path.join(__dirname, 'projects.json')
 
 // Admin credentials (change these for production!)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'shivasaini1938@gmail.com'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Shiva@2416'
 const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex')
 
+// Connect to MongoDB
+connectDB()
+
 app.use(cors())
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// Add request logging
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`)
   next()
 })
 
-// Ensure data file exists
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, '[]')
-}
-
-if (!fs.existsSync(PROJECTS_FILE)) {
-  fs.writeFileSync(PROJECTS_FILE, '[]')
-}
-
-function readMessages() {
-  try {
-    const raw = fs.readFileSync(DATA_FILE, 'utf8')
-    return JSON.parse(raw || '[]')
-  } catch (e) {
-    console.error('Failed to read messages:', e)
-    return []
-  }
-}
-
-function writeMessages(msgs) {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2))
-  } catch (e) {
-    console.error('Failed to write messages:', e)
-  }
-}
-
-function readProjects() {
-  try {
-    const raw = fs.readFileSync(PROJECTS_FILE, 'utf8')
-    return JSON.parse(raw || '[]')
-  } catch (e) {
-    console.error('Failed to read projects:', e)
-    return []
-  }
-}
-
-function writeProjects(projects) {
-  try {
-    fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2))
-  } catch (e) {
-    console.error('Failed to write projects:', e)
-  }
-}
-
 // API Routes (must be before static file serving)
 
 // POST /api/admin/login - admin login
-app.post('/api/admin/login', (req, res) => {
-  const { email, password } = req.body || {}
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    // Generate simple token (in production use JWT library)
-    const token = crypto.createHmac('sha256', JWT_SECRET)
-      .update(`${email}:${Date.now()}`)
-      .digest('hex')
-    return res.json({ ok: true, token, email })
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body || {}
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      // Generate simple token (in production use JWT library)
+      const token = crypto.createHmac('sha256', JWT_SECRET)
+        .update(`${email}:${Date.now()}`)
+        .digest('hex')
+      return res.json({ ok: true, token, email })
+    }
+    return res.status(401).json({ error: 'Invalid credentials' })
+  } catch (error) {
+    console.error('Login error:', error)
+    return res.status(500).json({ error: 'Server error' })
   }
-  return res.status(401).json({ error: 'Invalid credentials' })
 })
 
 // Middleware to verify token
@@ -99,111 +64,129 @@ function verifyToken(req, res, next) {
 }
 
 // POST /api/messages - accept contact messages
-app.post('/api/messages', (req, res) => {
-  const { name, email, message } = req.body || {}
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'name, email and message are required' })
-  }
+app.post('/api/messages', async (req, res) => {
+  try {
+    const { name, email, message } = req.body || {}
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'name, email and message are required' })
+    }
 
-  const msgs = readMessages()
-  const newMsg = {
-    id: Date.now(),
-    name,
-    email,
-    message,
-    createdAt: new Date().toISOString()
-  }
-  msgs.unshift(newMsg)
-  writeMessages(msgs)
+    const newMessage = new Message({
+      name,
+      email,
+      message
+    })
 
-  return res.status(201).json({ ok: true, message: 'Message saved' })
+    await newMessage.save()
+
+    return res.status(201).json({ ok: true, message: 'Message saved' })
+  } catch (error) {
+    console.error('Save message error:', error)
+    return res.status(500).json({ error: 'Server error' })
+  }
 })
 
 // GET /api/messages - protected admin endpoint
-app.get('/api/messages', verifyToken, (req, res) => {
-  const msgs = readMessages()
-  res.json(msgs)
+app.get('/api/messages', verifyToken, async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 })
+    res.json(messages)
+  } catch (error) {
+    console.error('Get messages error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
 })
 
 // GET /api/projects - public endpoint to get all projects
-app.get('/api/projects', (req, res) => {
-  const projects = readProjects()
-  res.json(projects)
+app.get('/api/projects', async (req, res) => {
+  try {
+    const projects = await Project.find().sort({ createdAt: -1 })
+    res.json(projects)
+  } catch (error) {
+    console.error('Get projects error:', error)
+    res.status(500).json({ error: 'Server error' })
+  }
 })
 
 // POST /api/projects - protected admin endpoint to create project
-app.post('/api/projects', verifyToken, (req, res) => {
-  const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
-  
-  if (!title || !description) {
-    return res.status(400).json({ error: 'Title and description are required' })
-  }
+app.post('/api/projects', verifyToken, async (req, res) => {
+  try {
+    const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
+    
+    if (!title || !description) {
+      return res.status(400).json({ error: 'Title and description are required' })
+    }
 
-  const projects = readProjects()
-  const newProject = {
-    id: Date.now(),
-    title,
-    description,
-    image: image || '',
-    liveLink: liveLink || '',
-    githubLink: githubLink || '',
-    technologies: technologies || [],
-    featured: featured || false,
-    createdAt: new Date().toISOString()
+    const newProject = new Project({
+      title,
+      description,
+      image: image || '',
+      liveLink: liveLink || '',
+      githubLink: githubLink || '',
+      technologies: technologies || [],
+      featured: featured || false
+    })
+    
+    await newProject.save()
+    
+    return res.status(201).json({ ok: true, project: newProject })
+  } catch (error) {
+    console.error('Create project error:', error)
+    return res.status(500).json({ error: 'Server error' })
   }
-  
-  projects.push(newProject)
-  writeProjects(projects)
-  
-  return res.status(201).json({ ok: true, project: newProject })
 })
 
 // PUT /api/projects/:id - protected admin endpoint to update project
-app.put('/api/projects/:id', verifyToken, (req, res) => {
-  const projectId = parseInt(req.params.id)
-  const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
-  
-  if (!title || !description) {
-    return res.status(400).json({ error: 'Title and description are required' })
-  }
+app.put('/api/projects/:id', verifyToken, async (req, res) => {
+  try {
+    const projectId = req.params.id
+    const { title, description, image, liveLink, githubLink, technologies, featured } = req.body || {}
+    
+    if (!title || !description) {
+      return res.status(400).json({ error: 'Title and description are required' })
+    }
 
-  const projects = readProjects()
-  const projectIndex = projects.findIndex(p => p.id === projectId)
-  
-  if (projectIndex === -1) {
-    return res.status(404).json({ error: 'Project not found' })
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      {
+        title,
+        description,
+        image: image || '',
+        liveLink: liveLink || '',
+        githubLink: githubLink || '',
+        technologies: technologies || [],
+        featured: featured || false
+      },
+      { new: true, runValidators: true }
+    )
+    
+    if (!updatedProject) {
+      return res.status(404).json({ error: 'Project not found' })
+    }
+    
+    return res.json({ ok: true, project: updatedProject })
+  } catch (error) {
+    console.error('Update project error:', error)
+    return res.status(500).json({ error: 'Server error' })
   }
-
-  const updatedProject = {
-    ...projects[projectIndex],
-    title,
-    description,
-    image: image || '',
-    liveLink: liveLink || '',
-    githubLink: githubLink || '',
-    technologies: technologies || [],
-    featured: featured || false
-  }
-  
-  projects[projectIndex] = updatedProject
-  writeProjects(projects)
-  
-  return res.json({ ok: true, project: updatedProject })
 })
 
 // DELETE /api/projects/:id - protected admin endpoint to delete project
-app.delete('/api/projects/:id', verifyToken, (req, res) => {
-  const projectId = parseInt(req.params.id)
-  
-  const projects = readProjects()
-  const filteredProjects = projects.filter(p => p.id !== projectId)
-  
-  if (filteredProjects.length === projects.length) {
-    return res.status(404).json({ error: 'Project not found' })
+app.delete('/api/projects/:id', verifyToken, async (req, res) => {
+  try {
+    const projectId = req.params.id
+    
+    const deletedProject = await Project.findByIdAndDelete(projectId)
+    
+    if (!deletedProject) {
+      return res.status(404).json({ error: 'Project not found' })
+    }
+    
+    return res.json({ ok: true, message: 'Project deleted' })
+  } catch (error) {
+    console.error('Delete project error:', error)
+    return res.status(500).json({ error: 'Server error' })
   }
-  
-  writeProjects(filteredProjects)
-  return res.json({ ok: true, message: 'Project deleted' })
 })
 
 // POST /api/admin/change-password - change admin password

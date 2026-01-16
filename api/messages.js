@@ -1,25 +1,34 @@
-import fs from 'fs';
-import path from 'path';
+// MongoDB-based message handler for serverless deployment
+const mongoose = require('mongoose');
 
-// Ephemeral storage path (serverless /tmp)
-const DATA_FILE = path.join('/tmp', 'messages.json');
+// Message Schema
+const messageSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true, lowercase: true },
+  message: { type: String, required: true },
+  read: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+}, { timestamps: true });
 
-function readMessages() {
-  try {
-    if (!fs.existsSync(DATA_FILE)) return [];
-    const raw = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(raw || '[]');
-  } catch (e) {
-    console.error('Failed to read messages:', e);
-    return [];
+const Message = mongoose.models.Message || mongoose.model('Message', messageSchema);
+
+// MongoDB connection
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI is not defined');
   }
-}
-
-function writeMessages(msgs) {
+  
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(msgs, null, 2));
-  } catch (e) {
-    console.error('Failed to write messages:', e);
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log('✅ MongoDB connected');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    throw error;
   }
 }
 
@@ -56,11 +65,21 @@ async function sendEmail(name, email, message, timestamp) {
 }
 
 export default async function handler(req, res) {
+  // Connect to MongoDB
+  await connectDB();
+
   if (req.method === 'GET') {
     if (!verifyToken(req)) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    return res.status(200).json(readMessages());
+    
+    try {
+      const messages = await Message.find().sort({ createdAt: -1 });
+      return res.status(200).json(messages);
+    } catch (error) {
+      console.error('Get messages error:', error);
+      return res.status(500).json({ error: 'Server error' });
+    }
   }
 
   if (req.method === 'POST') {
@@ -70,12 +89,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'name, email and message are required' });
       }
 
-      const msgs = readMessages();
-      const newMsg = { id: Date.now(), name, email, message, createdAt: new Date().toISOString() };
-      msgs.unshift(newMsg);
-      writeMessages(msgs);
+      const newMessage = new Message({ name, email, message });
+      await newMessage.save();
 
-      const emailSent = await sendEmail(name, email, message, newMsg.createdAt);
+      const emailSent = await sendEmail(name, email, message, newMessage.createdAt);
 
       return res.status(201).json({ ok: true, message: 'Message saved', emailSent });
     } catch (e) {
