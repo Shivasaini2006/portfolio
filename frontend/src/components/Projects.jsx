@@ -31,8 +31,13 @@ export default function Projects() {
       const response = await fetch('/api/projects')
       if (response.ok) {
         const data = await response.json()
+        // Map MongoDB _id to id for compatibility
+        const projectsWithId = data.map(project => ({
+          ...project,
+          id: project._id
+        }))
         // Sort by featured first, then by creation date
-        const sortedProjects = data.sort((a, b) => {
+        const sortedProjects = projectsWithId.sort((a, b) => {
           if (a.featured && !b.featured) return -1
           if (!a.featured && b.featured) return 1
           return new Date(b.createdAt) - new Date(a.createdAt)

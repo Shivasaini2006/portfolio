@@ -57,7 +57,12 @@ export default function ProjectsManager() {
       const response = await fetch('/api/projects')
       if (response.ok) {
         const data = await response.json()
-        setProjects(data)
+        // Map MongoDB _id to id for compatibility
+        const projectsWithId = data.map(project => ({
+          ...project,
+          id: project._id
+        }))
+        setProjects(projectsWithId)
       } else {
         console.error('Failed to load projects')
       }
