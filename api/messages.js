@@ -1,36 +1,5 @@
-// MongoDB-based message handler for serverless deployment
-const mongoose = require('mongoose');
-
-// Message Schema
-const messageSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, trim: true, lowercase: true },
-  message: { type: String, required: true },
-  read: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
-}, { timestamps: true });
-
-const Message = mongoose.models.Message || mongoose.model('Message', messageSchema);
-
-// MongoDB connection
-let isConnected = false;
-
-async function connectDB() {
-  if (isConnected) return;
-  
-  if (!process.env.MONGODB_URI) {
-    throw new Error('MONGODB_URI is not defined');
-  }
-  
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    isConnected = true;
-    console.log('✅ MongoDB connected');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    throw error;
-  }
-}
+const { connectDB } = require('./_db');
+const Message = require('../backend/server/models/Message');
 
 function verifyToken(req) {
   const token = req.headers['x-admin-token'];
@@ -43,7 +12,7 @@ async function sendEmail(name, email, message, timestamp) {
   }
   
   try {
-    const { Resend } = await import('resend');
+    const { Resend } = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     
     await resend.emails.send({
@@ -64,7 +33,7 @@ async function sendEmail(name, email, message, timestamp) {
   }
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Connect to MongoDB
   await connectDB();
 

@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 // In-memory password store (non-persistent). Replace with DB / KV in production.
 let ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shiva@2416';
@@ -17,7 +17,7 @@ function verifyToken(req) {
   return !!token;
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
